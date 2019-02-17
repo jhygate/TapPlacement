@@ -33,7 +33,7 @@ def giveLocation():
         response = Response()
         response.status_code = 400
         return response
-    response = map_downloader.download_patch((13.623299, -15.192386),API_KEY)
+    response = map_downloader.download_patch((lon,lat),API_KEY)
     image_array = numpy.asarray(bytearray(response.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
     base64_payload = process((lon,lat),map_image)
