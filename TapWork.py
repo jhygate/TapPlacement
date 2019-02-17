@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import itertools
 import cv2
+import copy
 
 
 
@@ -129,19 +130,19 @@ def draw_network(houses,taps,image = "null"):
     plt.show()
 
 
-import copy
-
-taps = [(10, 16), (18, 6), (19, 19)]
-demands = get_taps_demand(taps,houses)
-print(demands)
-
-print(total_demand(demands))
-
-taps = [(10, 16), (10,10), (19, 19)]
-demands = get_taps_demand(taps,houses)
-print(demands)
-
-print(total_demand(demands))
+# import copy
+#
+# taps = [(10, 16), (18, 6), (19, 19)]
+# demands = get_taps_demand(taps,houses)
+# print(demands)
+#
+# print(total_demand(demands))
+#
+# taps = [(10, 16), (10,10), (19, 19)]
+# demands = get_taps_demand(taps,houses)
+# print(demands)
+#
+# print(total_demand(demands))
 
 def total(demands):
     totalval = 0
@@ -162,25 +163,24 @@ def greedy_brute(houses,amount_of_taps,grid_size,image="null"):
 
     for tap_placed in range(amount_of_taps):
         min_total_differnces = 999999999999999
-        happy_taps = []
+        happy_taps = [0]
         for possible_coord in possible_coords:
             tick += 1
             if tick % (int(total_tick/1000)) == 0:
                 print(tick*100/total_tick)
-            taps = list(stored_taps)
+            taps = list(copy.copy(stored_taps))
             taps.append(possible_coord)
 
             tap_demand = get_taps_demand(taps, houses)
             total_differnce = total_demand(tap_demand)
 
             if total_differnce == min_total_differnces:
-                happy_taps.append(taps)
+                happy_taps[0] = possible_coord
 
             if total_differnce < min_total_differnces:
-                happy_taps = []
-                happy_taps.append(possible_coord)
-                min_total_differnces = total_differnce
+                happy_taps[0] = possible_coord
 
+                min_total_differnces = total_differnce
         stored_taps.append(happy_taps[-1])
     draw_network(houses, stored_taps,image)
 
