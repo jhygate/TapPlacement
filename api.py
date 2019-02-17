@@ -1,4 +1,5 @@
 from flask import Flask, request, Response, jsonify
+from flask_cors import CORS
 import requests
 import cv2
 import base64
@@ -8,6 +9,7 @@ import TapWork, recolour, resize, contours, map_downloader
 API_KEY = 'PLACEHOLDER'
 
 app = Flask(__name__)
+cors = CORS(app)
 
 def toBase64(image):
     _, buffer = cv2.imencode('.png', image)
