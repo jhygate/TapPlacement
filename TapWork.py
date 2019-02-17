@@ -149,6 +149,44 @@ def total(demands):
         totalval += demand
     return totalval
 
+def greedy_brute(houses,amount_of_taps,grid_size,image="null"):
+    tick = 0
+    total_tick = amount_of_taps*grid_size[0]*grid_size[1]
+    happy_taps = []
+    stored_taps = []
+    possible_coords = []
+
+    for x in range(grid_size[0] + 1):
+        for y in range(grid_size[1] + 1):
+            possible_coords.append((x, y))
+
+    for tap_placed in range(amount_of_taps):
+        min_total_differnces = 999999999999999
+        happy_taps = []
+        for possible_coord in possible_coords:
+            tick += 1
+            if tick % (int(total_tick/1000)) == 0:
+                print(tick*100/total_tick)
+            taps = list(stored_taps)
+            taps.append(possible_coord)
+
+            tap_demand = get_taps_demand(taps, houses)
+            total_differnce = total_demand(tap_demand)
+
+            if total_differnce == min_total_differnces:
+                happy_taps.append(taps)
+
+            if total_differnce < min_total_differnces:
+                happy_taps = []
+                happy_taps.append(possible_coord)
+                min_total_differnces = total_differnce
+
+        stored_taps.append(happy_taps[-1])
+    draw_network(houses, stored_taps,image)
+
+
+
+
 def brute_tap_position(houses,amount_of_taps,grid_size,image="null"):
 
 
@@ -159,6 +197,8 @@ def brute_tap_position(houses,amount_of_taps,grid_size,image="null"):
     for x in range(grid_size[0]+1):
         for y in range(grid_size[1]+1):
             possible_coords.append((x, y))
+
+
 
 
 

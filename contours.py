@@ -50,5 +50,5 @@ cv2.waitKey(0)
 
 import TapWork
 print(height,width)
-TapWork.brute_tap_position(nodes,2,(height,width),image="resized.jpg")
+TapWork.greedy_brute(nodes,8,(height,width),image="resized.jpg")
 
