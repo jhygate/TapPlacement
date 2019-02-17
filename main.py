@@ -1,13 +1,17 @@
 import resize
-import messingcolour
+import recolour
 import contours
 import TapWork
 import map_downloader
+import cv2
+import numpy as np
 
-map_downloader.download_patch((13.323964, -15.9257),'AgqByPum4K6T5wlV3oIAhSDvFHVRuoPs6cwipRdvprWtmvqld0poyLI54AP0e6HI')
+response = map_downloader.download_patch((13.623299, -15.192386),)
+image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
+map_image = cv2.imdecode(image_array, -1)
 max_size = 200
-height, width = resize.resize('downloaded.png',max_size)
-print(height,width)
-messingcolour.find_silver()
-houses = contours.get_contour_nodes()
-TapWork.greedy_brute(houses,5,(height,width),image='resized.jpg')
+resized_image = resize.resize(map_image,max_size)
+height, width, _ = resized_image.shape
+recoloured_image = recolour.find_silver(resized_image)
+houses = contours.get_contour_nodes(recoloured_image)
+TapWork.greedy_brute(houses,5,(height,width),resized_image)
