@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import itertools
 import cv2
 import copy
-import tqdm
+from tqdm import tqdm
 
 def get_taps_demand(taps,houses):
     tap_demand = []
@@ -91,24 +91,24 @@ def greedy_brute(houses,amount_of_taps,grid_size):
         for y in range(grid_size[1] + 1):
             possible_coords.append((x, y))
 
-    with tqdm(max=total_tick) as t:
-    for tap_placed in range(amount_of_taps):
-        min_total_differnces = 999999999999999
-        happy_taps = [0]
-        for possible_coord in possible_coords:
-            t.update(1)
-            taps = list(copy.copy(stored_taps))
-            taps.append(possible_coord)
+    with tqdm(total=total_tick) as t:
+        for tap_placed in range(amount_of_taps):
+            min_total_differnces = 999999999999999
+            happy_taps = [0]
+            for possible_coord in possible_coords:
+                t.update(1)
+                taps = list(copy.copy(stored_taps))
+                taps.append(possible_coord)
 
-            tap_demand = get_taps_demand(taps, houses)
-            total_differnce = total_demand(tap_demand)
+                tap_demand = get_taps_demand(taps, houses)
+                total_differnce = total_demand(tap_demand)
 
-            if total_differnce == min_total_differnces:
-                happy_taps[0] = possible_coord
+                if total_differnce == min_total_differnces:
+                    happy_taps[0] = possible_coord
 
-            if total_differnce < min_total_differnces:
-                happy_taps[0] = possible_coord
+                if total_differnce < min_total_differnces:
+                    happy_taps[0] = possible_coord
 
-                min_total_differnces = total_differnce
-        stored_taps.append(happy_taps[-1])
+                    min_total_differnces = total_differnce
+            stored_taps.append(happy_taps[-1])
     return stored_taps
