@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import itertools
 import cv2
 import copy
+import tqdm
 
 def get_taps_demand(taps,houses):
     tap_demand = []
@@ -23,7 +24,6 @@ def get_taps_demand(taps,houses):
             if tap_dist < lowest_distance:
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
-
         houses_tap.append((house_tap,work_done(lowest_distance)*house[0]))
 
     for tap in houses_tap:
@@ -81,8 +81,7 @@ def total(demands):
         totalval += demand
     return totalval
 
-def greedy_brute(houses,amount_of_taps,grid_size,image):
-    tick = 0
+def greedy_brute(houses,amount_of_taps,grid_size):
     total_tick = amount_of_taps*grid_size[0]*grid_size[1]
     happy_taps = []
     stored_taps = []
@@ -92,13 +91,12 @@ def greedy_brute(houses,amount_of_taps,grid_size,image):
         for y in range(grid_size[1] + 1):
             possible_coords.append((x, y))
 
+    with tqdm(max=total_tick) as t:
     for tap_placed in range(amount_of_taps):
         min_total_differnces = 999999999999999
         happy_taps = [0]
         for possible_coord in possible_coords:
-            tick += 1
-            if tick % (int(total_tick/1000)) == 0:
-                print(tick*100/total_tick)
+            t.update(1)
             taps = list(copy.copy(stored_taps))
             taps.append(possible_coord)
 
@@ -113,4 +111,4 @@ def greedy_brute(houses,amount_of_taps,grid_size,image):
 
                 min_total_differnces = total_differnce
         stored_taps.append(happy_taps[-1])
-    draw_network(houses, stored_taps,image)
+    return stored_taps

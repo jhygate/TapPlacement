@@ -14,4 +14,5 @@ resized_image = resize.resize(map_image,max_size)
 height, width, _ = resized_image.shape
 recoloured_image = recolour.find_silver(resized_image)
 houses = contours.get_contour_nodes(recoloured_image)
-TapWork.greedy_brute(houses,5,(height,width),resized_image)
+tap_locations = TapWork.greedy_brute(houses,5,(height,width))
+TapWork.draw_network(houses,tap_locations,resized_image)
