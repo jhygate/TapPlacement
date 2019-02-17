@@ -6,7 +6,9 @@ import map_downloader
 import cv2
 import numpy as np
 
-response = map_downloader.download_patch((13.623299, -15.192386),)
+API_KEY = 'PLACEHOLDER'
+
+response = map_downloader.download_patch((13.623299, -15.192386),API_KEY)
 image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
 map_image = cv2.imdecode(image_array, -1)
 max_size = 200

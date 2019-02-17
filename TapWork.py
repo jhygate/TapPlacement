@@ -48,7 +48,7 @@ def total_demand(tap_demands):
         total+=tap
     return total
 
-def draw_network(houses,taps,image):
+def draw_network(houses,taps,image, display = True):
     pos = {}
     names = []
     edges = []
@@ -72,8 +72,10 @@ def draw_network(houses,taps,image):
 
     nx.draw_networkx(G, pos=pos, node_color='b',node_size=30,fontsize=50)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    plt.imshow(image)
-    plt.show()
+    if display:
+        plt.imshow(image)
+        plt.show()
+    return image
 
 def total(demands):
     totalval = 0
