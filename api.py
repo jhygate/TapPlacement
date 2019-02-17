@@ -6,13 +6,13 @@ import base64
 import numpy
 import TapWork, recolour, resize, contours, map_downloader
 
-API_KEY = 'PLACEHOLDER'
+API_KEY = 'AgqByPum4K6T5wlV3oIAhSDvFHVRuoPs6cwipRdvprWtmvqld0poyLI54AP0e6HI'
 
 app = Flask(__name__)
 cors = CORS(app)
 
 def toBase64(image):
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+#    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     _, buffer = cv2.imencode('.png', image)
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
@@ -24,6 +24,7 @@ def process(image,max_size=200,taps=5):
     houses = contours.get_contour_nodes(recoloured_image)
     tap_locations = TapWork.greedy_brute(houses,taps,(height,width))
     image = TapWork.draw_network(houses,tap_locations,resized_image,display=False) 
+    image = cv2.imread('figureTaps.png')
     return toBase64(image)
 
 @app.route('/giveLocation', methods=['GET'])
@@ -52,4 +53,4 @@ def giveLocation():
     return jsonify(image=base64_payload)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=25565,host='0.0.0.0')

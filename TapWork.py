@@ -1,4 +1,5 @@
 import math
+from PIL import Image, ImageChops
 import networkx as nx
 import matplotlib.pyplot as plt
 import itertools
@@ -59,7 +60,7 @@ def draw_network(houses,taps,image, display = True):
     G = nx.Graph()
     G.add_edges_from(edges)
 
-    nx.draw_networkx(G, pos=pos, node_color='r',node_size = 30,font_size=20)
+    nx.draw_networkx(G, pos=pos, node_color='r',node_size = 20,font_size=10)
 
     pos = {}
     edges = []
@@ -70,11 +71,21 @@ def draw_network(houses,taps,image, display = True):
     G = nx.Graph()
     G.add_edges_from(edges)
 
-    nx.draw_networkx(G, pos=pos, node_color='b',node_size=50,fontsize=50)
+    nx.draw_networkx(G, pos=pos, node_color='b',node_size=42,fontsize=15)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    if display:
-        plt.imshow(image)
-        plt.show()
+    fig1 = plt.gcf()
+    plt.axis('off')
+    plt.imshow(image)
+#    plt.show()
+
+    fig1.savefig('figureTaps.png',bbox_inches='tight')
+    im = Image.open('figureTaps.png')
+    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff,diff,2.0,-100)
+    bbox = diff.getbbox()
+    image = im.crop(bbox)
+    image.save('figureTaps.png')
     return image
 
 def total(demands):
