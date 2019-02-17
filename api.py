@@ -14,7 +14,7 @@ def toBase64(image):
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
 
-def process(coords, image):
+def process(image):
     max_size = 200
     resized_image = resize.resize(image,max_size)
     height, width, _ = resized_image.shape
@@ -36,7 +36,7 @@ def giveLocation():
     response = map_downloader.download_patch((lon,lat),API_KEY)
     image_array = numpy.asarray(bytearray(response.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
-    base64_payload = process((lon,lat),map_image)
+    base64_payload = process(map_image)
     return jsonify(image=base64_payload)
 
 if __name__ == '__main__':
