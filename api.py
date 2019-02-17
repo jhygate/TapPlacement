@@ -37,7 +37,7 @@ def giveLocation():
         response = Response()
         response.status_code = 400
         return response
-    response = map_downloader.download_patch((lon,lat),API_KEY)
+    response = map_downloader.download_patch((lat,lon),API_KEY)
     image_array = numpy.asarray(bytearray(response.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
     if max_size is not None and taps is not None:

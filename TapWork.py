@@ -59,7 +59,7 @@ def draw_network(houses,taps,image, display = True):
     G = nx.Graph()
     G.add_edges_from(edges)
 
-    nx.draw_networkx(G, pos=pos, node_color='r',node_size = 15,font_size=10)
+    nx.draw_networkx(G, pos=pos, node_color='r',node_size = 30,font_size=20)
 
     pos = {}
     edges = []
@@ -70,7 +70,7 @@ def draw_network(houses,taps,image, display = True):
     G = nx.Graph()
     G.add_edges_from(edges)
 
-    nx.draw_networkx(G, pos=pos, node_color='b',node_size=30,fontsize=50)
+    nx.draw_networkx(G, pos=pos, node_color='b',node_size=50,fontsize=50)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if display:
         plt.imshow(image)
