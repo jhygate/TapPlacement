@@ -12,6 +12,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 def toBase64(image):
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     _, buffer = cv2.imencode('.png', image)
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
