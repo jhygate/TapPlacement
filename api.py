@@ -14,13 +14,12 @@ def toBase64(image):
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
 
-def process(image):
-    max_size = 200
+def process(image,max_size=200,taps=5):
     resized_image = resize.resize(image,max_size)
     height, width, _ = resized_image.shape
     recoloured_image = recolour.find_silver(resized_image)
     houses = contours.get_contour_nodes(recoloured_image)
-    tap_locations = TapWork.greedy_brute(houses,5,(height,width))
+    tap_locations = TapWork.greedy_brute(houses,taps,(height,width))
     image = TapWork.draw_network(houses,tap_locations,resized_image,display=False) 
     return toBase64(image)
 
@@ -28,6 +27,8 @@ def process(image):
 def giveLocation():
     lon = request.args.get('long')
     lat = request.args.get('lat')
+    max_size = request.args.get('size')
+    taps = request.args.get('taps')
     print(lon,lat)
     if lon is None or lat is None:
         response = Response()
@@ -36,7 +37,15 @@ def giveLocation():
     response = map_downloader.download_patch((lon,lat),API_KEY)
     image_array = numpy.asarray(bytearray(response.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
-    base64_payload = process(map_image)
+    if max_size is not None and taps is not None:
+        base64_payload = process(map_image,max_size=max_size,taps=taps)
+    elif max_size is not None: 
+        base64_payload = process(map_image,max_size=max_size)
+    elif taps is not None:
+        base64_payload = process(map_image,taps=taps)
+    else:
+        base64_payload = process(map_image)
+
     return jsonify(image=base64_payload)
 
 if __name__ == '__main__':
