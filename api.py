@@ -4,9 +4,7 @@ import requests
 import cv2
 import base64
 import numpy
-import TapWork, recolour, resize, contours, map_downloader
-
-API_KEY = 'AgqByPum4K6T5wlV3oIAhSDvFHVRuoPs6cwipRdvprWtmvqld0poyLI54AP0e6HI'
+import TapWork, recolour, resize, contours, map_downloader, credentials
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -38,7 +36,7 @@ def giveLocation():
         response = Response()
         response.status_code = 400
         return response
-    response = map_downloader.download_patch((lat,lon),API_KEY)
+    response = map_downloader.download_patch((lat,lon), credentials.API_KEY)
     image_array = numpy.asarray(bytearray(response.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
     if max_size is not None and taps is not None:

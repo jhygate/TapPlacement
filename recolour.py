@@ -2,19 +2,26 @@ import cv2
 import numpy
 
 def find_silver(image):
+    image = cv2.GaussianBlur(image,(5,5),0)
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    h,s,v = cv2.split(hsv)
-
     rgb = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
 
-    mask = cv2.inRange(rgb, (150,160,160), (255, 255, 255))
-    image = cv2.bitwise_and(image, image, mask=mask)
+    cv2.imshow("HSV", hsv)
+    cv2.waitKey();
 
-    for w in range(image.shape[0]):
-        for h in range(image.shape[1]):
-            # checks if not pure black
-            if(all(rgb != 0 for rgb in image[w][h])):
-                # makes pixel completely white
-                for colour in range(image.shape[2]):
-                    image[w][h][colour] = 255
-    return image
+    mask2 = cv2.inRange(hsv, (10,0,120), (85, 70, 255))
+    # mask2 = cv2.inRange(hsv, (0,0,180), (255, 255, 255))
+
+
+    cv2.imshow("mask2", mask2)
+
+    newimage = cv2.bitwise_and(rgb, rgb, mask=mask2)
+    mask = cv2.inRange(rgb, (150,150,140), (255, 255, 255))
+
+
+
+    cv2.imshow("mask", mask)
+    cv2.waitKey();
+
+
+    return mask

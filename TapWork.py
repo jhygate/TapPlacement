@@ -1,6 +1,9 @@
 import math
 from PIL import Image, ImageChops
 import networkx as nx
+import matplotlib
+# matplotlib.use('TkAgg')
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import itertools
 import cv2
