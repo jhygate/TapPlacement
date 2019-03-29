@@ -62,17 +62,19 @@ def draw_network(houses,taps,image, display = True):
         pos[i]=(houses[i][1][0],houses[i][1][1])
         names[i]=str(round(houses[i][0]))
 
-    nx.draw_networkx(g, pos=pos, labels=names, node_color='r',node_size = 15,font_size=10)
+    nx.draw_networkx(g, pos=pos, labels=names, node_color='r',node_size = 90,font_size=8, alpha=0.6)
 
     pos = {}
     names = {}
     g = nx.Graph()
-    for i in range(len(houses)):
+    for i in range(len(taps)):
         g.add_node(i)
         pos[i]=(taps[i][0],taps[i][1])
-        names[i]= str(i + 1)
+        names[i]= str((i + 1))
 
-    nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=90,fontsize=8, font_color='w')
+    nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=120, font_size=10, font_color='w')
+    
+    
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     fig1 = plt.gcf()
     plt.axis('off')
