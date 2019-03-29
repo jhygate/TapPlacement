@@ -54,6 +54,9 @@ def total_demand(tap_demands):
     return total
 
 def draw_network(houses,taps,image, display = True):
+
+    plt.clf()
+
     pos = {}
     names = {}
     g = nx.Graph()
@@ -74,7 +77,6 @@ def draw_network(houses,taps,image, display = True):
 
     nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=120, font_size=10, font_color='w')
     
-    
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     fig1 = plt.gcf()
     plt.axis('off')
@@ -83,6 +85,7 @@ def draw_network(houses,taps,image, display = True):
 
     fig1.tight_layout(pad=0)
     fig1.canvas.draw()
+
     img = np.frombuffer(fig1.canvas.tostring_rgb(), dtype=np.uint8)
     img = img.reshape(fig1.canvas.get_width_height()[::-1] + (3,))
     img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
