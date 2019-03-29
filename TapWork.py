@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import itertools
 import cv2
 import copy
+import numpy as np
 from tqdm import tqdm
 
 def get_taps_demand(taps,houses):
@@ -54,42 +55,39 @@ def total_demand(tap_demands):
 
 def draw_network(houses,taps,image, display = True):
     pos = {}
-    names = []
-    edges = []
+    names = {}
+    g = nx.Graph()
     for i in range(len(houses)):
-        pos[str(houses[i][0])]=(houses[i][1][0],houses[i][1][1])
-        edges.append((str(houses[i][0]),str(houses[i][0])))
+        g.add_node(i)
+        pos[i]=(houses[i][1][0],houses[i][1][1])
+        names[i]=str(round(houses[i][0]))
 
-    G = nx.Graph()
-    G.add_edges_from(edges)
-
-    nx.draw_networkx(G, pos=pos, node_color='r',node_size = 20,font_size=10)
+    nx.draw_networkx(g, pos=pos, labels=names, node_color='r',node_size = 15,font_size=10)
 
     pos = {}
-    edges = []
-    for i in range(len(taps)):
-        pos[(i+1)]=(taps[i][0],taps[i][1])
-        edges.append((i+1,i+1))
+    names = {}
+    g = nx.Graph()
+    for i in range(len(houses)):
+        g.add_node(i)
+        pos[i]=(taps[i][0],taps[i][1])
+        names[i]= str(i + 1)
 
-    G = nx.Graph()
-    G.add_edges_from(edges)
-
-    nx.draw_networkx(G, pos=pos, node_color='b',node_size=42,fontsize=15)
+    nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=90,fontsize=8, font_color='w')
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     fig1 = plt.gcf()
     plt.axis('off')
     plt.imshow(image)
 #    plt.show()
 
-    fig1.savefig('figureTaps.png',bbox_inches='tight')
-    im = Image.open('figureTaps.png')
-    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
-    diff = ImageChops.difference(im, bg)
-    diff = ImageChops.add(diff,diff,2.0,-100)
-    bbox = diff.getbbox()
-    image = im.crop(bbox)
-    image.save('figureTaps.png')
-    return image
+    fig1.tight_layout(pad=0)
+    fig1.canvas.draw()
+    img = np.frombuffer(fig1.canvas.tostring_rgb(), dtype=np.uint8)
+    img = img.reshape(fig1.canvas.get_width_height()[::-1] + (3,))
+    img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+
+    crop_img = img[5:455, 94:544]
+    # cv2.imwrite("figureTaps.png",crop_img)
+    return crop_img
 
 def total(demands):
     totalval = 0
