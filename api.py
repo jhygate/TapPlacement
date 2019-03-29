@@ -27,8 +27,8 @@ def process(image,max_size=200,taps=5):
 def giveLocation():
     lon = request.args.get('long')
     lat = request.args.get('lat')
-    max_size = request.args.get('size')
-    taps = request.args.get('taps')
+    max_size = int(request.args.get('size'))
+    taps = int(request.args.get('taps'))
     print(lon,lat)
     if lon is None or lat is None:
         response = Response()
