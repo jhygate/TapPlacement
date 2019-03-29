@@ -29,7 +29,8 @@ def get_taps_demand(taps,houses):
             if tap_dist < lowest_distance:
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
-        houses_tap.append((house_tap,work_done(lowest_distance)*house[0]))
+        # weight the distance^2 by the size^2 to give a score
+        houses_tap.append((house_tap,(lowest_distance**3)*(house[0]**2)))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
@@ -106,28 +107,25 @@ def greedy_brute(houses,amount_of_taps,grid_size):
     stored_taps = []
     possible_coords = []
 
-    for x in range(grid_size[0] + 1):
-        for y in range(grid_size[1] + 1):
-            possible_coords.append((x, y))
-
     with tqdm(total=total_tick) as t:
         for tap_placed in range(amount_of_taps):
             min_total_differnces = 999999999999999
-            happy_taps = [0]
-            for possible_coord in possible_coords:
-                t.update(1)
-                taps = list(copy.copy(stored_taps))
-                taps.append(possible_coord)
+            best_tap = (0,0)
+            for x in range(grid_size[0] + 1):
+                for y in range(grid_size[1] + 1):
+                    coord = (x, y);
+                    t.update(1)
+                    taps = list(copy.copy(stored_taps))
+                    taps.append(coord)
 
-                tap_demand = get_taps_demand(taps, houses)
-                total_differnce = total_demand(tap_demand)
+                    tap_demand = get_taps_demand(taps, houses)
+                    total_differnce = total_demand(tap_demand)
 
-                if total_differnce == min_total_differnces:
-                    happy_taps[0] = possible_coord
+                    if total_differnce == min_total_differnces:
+                        best_tap = coord
 
-                if total_differnce < min_total_differnces:
-                    happy_taps[0] = possible_coord
-
-                    min_total_differnces = total_differnce
-            stored_taps.append(happy_taps[-1])
+                    if total_differnce < min_total_differnces:
+                        best_tap = coord
+                        min_total_differnces = total_differnce
+            stored_taps.append(best_tap)
     return stored_taps

@@ -12,12 +12,12 @@ def find_silver(image):
     mask2 = cv2.inRange(hsv, (10,0,120), (85, 70, 255))
     # mask2 = cv2.inRange(hsv, (0,0,180), (255, 255, 255))
 
-    # cv2.imshow("mask2", mask2)
+    # cv2.imshow("first step", mask2)
 
     newrgb = cv2.bitwise_and(rgb, rgb, mask=mask2)
     mask = cv2.inRange(newrgb, (150,150,140), (255, 255, 255))
 
-    # cv2.imshow("mask", mask)
+    # cv2.imshow("second step", mask)
     # cv2.waitKey();
 
     return mask
