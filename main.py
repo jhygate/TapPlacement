@@ -9,7 +9,7 @@ import credentials
 
 # 13.624999, -15.191250
 # 13.623299, -15.192386
-response = map_downloader.download_patch((13.624999, -15.191250), credentials.API_KEY)
+response = map_downloader.download_patch((13.623299, -15.192386), credentials.API_KEY)
 print("Got map")
 image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
 map_image = cv2.imdecode(image_array, -1)
