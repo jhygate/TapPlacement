@@ -29,15 +29,12 @@ def get_taps_demand(taps,houses):
             if tap_dist < lowest_distance:
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
-        # weight the distance^2 by the size^2 to give a score
-        houses_tap.append((house_tap,(lowest_distance**3)*(house[0]**2)))
+        # weight the distance^2 by the size to give a score
+        houses_tap.append((house_tap,(lowest_distance**4)*(house[0]**2)))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
     return tap_demand
-
-def work_done(distance):
-    return distance**2
 
 def total_differnces(tap_demands):
     total = 0

@@ -10,9 +10,6 @@ def get_contour_nodes(image):
 
     areaperpixel = 83321 / totalpixels
 
-    pixels = cv2.sumElems(image)[0] / 255
-    totalarea = pixels * areaperpixel
-    percentage = round((pixels / totalpixels) * 100)
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     # thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
@@ -24,6 +21,8 @@ def get_contour_nodes(image):
 
     nodes = []
 
+    totalarea = 0;
+
     # loop over the contours
     for c in cnts:
         # compute the center of the contour
@@ -32,7 +31,11 @@ def get_contour_nodes(image):
                 M = cv2.moments(c)
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
+                totalarea += cv2.contourArea(c) * areaperpixel
                 nodes.append([cv2.contourArea(c) * areaperpixel, [cX, cY]])
         except:
             pass
+
+    print("average {}".format(totalarea / len(cnts)))
+    percentage = round((totalarea / (totalpixels * areaperpixel)) * 100)
     return nodes, percentage, totalarea
