@@ -5,6 +5,9 @@ import cv2
 # construct the argument parse and parse the arguments
 def get_contour_nodes(image):
     height, width = image.shape
+    totalpixels = height * width;
+    pixels = cv2.sumElems(image)[0] / 255;
+    percentage = round((pixels / totalpixels) * 100)
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     # thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
@@ -27,4 +30,4 @@ def get_contour_nodes(image):
                 nodes.append([cv2.contourArea(c), [cX, cY]])
         except:
             pass
-    return nodes
+    return nodes, percentage

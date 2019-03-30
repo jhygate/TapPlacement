@@ -24,7 +24,7 @@ recoloured_image = recolour.find_silver(resized_image)
 # cv2.imshow("Window", recoloured_image)
 # cv2.waitKey(0)
 
-houses = contours.get_contour_nodes(recoloured_image)
+houses, percentage = contours.get_contour_nodes(recoloured_image)
 print(houses)
 tap_locations = TapWork.greedy_brute(houses, 3, (height, width))
 print(tap_locations)
