@@ -8,6 +8,8 @@ def get_contour_nodes(image):
     height, width = image.shape
     totalpixels = height * width
 
+    print(height, width)
+
     areaperpixel = 83321 / totalpixels
 
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -27,7 +29,8 @@ def get_contour_nodes(image):
     for c in cnts:
         # compute the center of the contour
         try:
-            if cv2.contourArea(c) > (0.016 * height + 0.016 * width) / 2:
+            # consider buildings greater than 8m^2
+            if cv2.contourArea(c) * areaperpixel > 8:
                 M = cv2.moments(c)
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
