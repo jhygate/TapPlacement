@@ -30,7 +30,7 @@ def get_taps_demand(taps,houses):
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
         # weight the distance^2 by the size to give a score
-        houses_tap.append((house_tap,(lowest_distance**4)*(house[0]**2)))
+        houses_tap.append((house_tap,((lowest_distance**4)*(house[0]**2))/ 10000))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
@@ -51,7 +51,7 @@ def total_demand(tap_demands):
         total+=tap
     return total
 
-def draw_network(houses,taps,image, display = True):
+def draw_network(houses,taps, size, image, meters_squared_per_pixel):
 
     plt.clf()
 
@@ -73,7 +73,7 @@ def draw_network(houses,taps,image, display = True):
         pos[i]=(taps[i][0],taps[i][1])
         names[i]= str((i + 1))
 
-    nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=120, font_size=10, font_color='w')
+    nx.draw_networkx(g, pos=pos, labels=names, node_color='b',node_size=120, font_size=10, font_color='w')
     
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     fig1 = plt.gcf()
@@ -89,7 +89,6 @@ def draw_network(houses,taps,image, display = True):
     img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
 
     crop_img = img[5:455, 94:544]
-    # cv2.imwrite("figureTaps.png",crop_img)
     return crop_img
 
 def total(demands):
@@ -100,9 +99,7 @@ def total(demands):
 
 def greedy_brute(houses,amount_of_taps,grid_size, downscale):
     total_tick = (amount_of_taps*grid_size[0]*grid_size[1]) / (downscale**2)
-    happy_taps = []
     stored_taps = []
-    possible_coords = []
 
     with tqdm(total=total_tick) as t:
         for tap_placed in range(amount_of_taps):
@@ -111,7 +108,7 @@ def greedy_brute(houses,amount_of_taps,grid_size, downscale):
             for x in range(grid_size[0] + 1):
                 for y in range(grid_size[1] + 1):
                     if (x % downscale == 0 and y % downscale == 0):
-                        coord = (x, y);
+                        coord = (x, y)
                         t.update(1)
                         taps = list(copy.copy(stored_taps))
                         taps.append(coord)
@@ -126,4 +123,5 @@ def greedy_brute(houses,amount_of_taps,grid_size, downscale):
                             best_tap = coord
                             min_total_differnces = total_differnce
             stored_taps.append(best_tap)
+    print(stored_taps)
     return stored_taps

@@ -3,14 +3,12 @@ import imutils
 import cv2
 
 # construct the argument parse and parse the arguments
-def get_contour_nodes(image):
+def get_contour_nodes(image, meters_squared_per_pixel):
     # Total area is 83,321 m^2
     height, width = image.shape
     totalpixels = height * width
 
     print(height, width)
-
-    areaperpixel = 83321 / totalpixels
 
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -30,15 +28,15 @@ def get_contour_nodes(image):
         # compute the center of the contour
         try:
             # consider buildings greater than 8m^2
-            if cv2.contourArea(c) * areaperpixel > 8:
+            if cv2.contourArea(c) * meters_squared_per_pixel >10:
                 M = cv2.moments(c)
                 cX = round(M["m10"] / M["m00"])
                 cY = round(M["m01"] / M["m00"])
-                totalarea += cv2.contourArea(c) * areaperpixel
-                nodes.append([cv2.contourArea(c) * areaperpixel, [cX, cY]])
+                totalarea += cv2.contourArea(c) * meters_squared_per_pixel
+                nodes.append([cv2.contourArea(c) * meters_squared_per_pixel, [cX, cY]])
         except:
             pass
 
     print("average {}".format(totalarea / len(cnts)))
-    percentage = round((totalarea / (totalpixels * areaperpixel)) * 100)
+    percentage = round((totalarea / (totalpixels * meters_squared_per_pixel)) * 100)
     return nodes, percentage, totalarea

@@ -15,14 +15,13 @@ def toBase64(image):
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
 
-def process(image, max_size=200,taps=3, downscale=10):
-    resized_image = resize.resize(image,max_size)
-    height, width, _ = resized_image.shape
-    recoloured_image = recolour.find_silver(resized_image)
-    houses, percentage, housearea = contours.get_contour_nodes(recoloured_image)
-    print(downscale)
+def process(image, meters_squared_per_pixel, size ,taps=3, grid=20):
+    downscale = int(size / grid)
+    height, width, _ = image.shape
+    recoloured_image = recolour.find_silver(image)
+    houses, percentage, housearea = contours.get_contour_nodes(recoloured_image, meters_squared_per_pixel)
     tap_locations = TapWork.greedy_brute(houses,taps,(height,width), downscale)
-    image = TapWork.draw_network(houses,tap_locations,resized_image, (height,width)) 
+    image = TapWork.draw_network(houses,tap_locations, size, image, meters_squared_per_pixel) 
     population = round(housearea / 7)
     recommendation = round(population / 250)
     if recommendation == 0:
@@ -33,9 +32,9 @@ def process(image, max_size=200,taps=3, downscale=10):
 def giveLocation():
     lon = request.args.get('long')
     lat = request.args.get('lat')
-    max_size = request.args.get('size')
+    size = request.args.get('size')
     taps = request.args.get('taps')
-    downscale = request.args.get('downscale')
+    grid = request.args.get('grid')
     zoom = request.args.get('zoom')
     print(lon,lat)
     if lon is None or lat is None:
@@ -44,19 +43,16 @@ def giveLocation():
         return response
     if zoom is None:
         zoom = 19
-    image = map_downloader.download_patch((lat,lon), credentials.API_KEY, zoom=int(zoom))
-    image_array = numpy.asarray(bytearray(image.content), dtype=numpy.uint8)
-    map_image = cv2.imdecode(image_array, -1)
-    if max_size is not None and taps is not None and downscale is not None:
-        result = process(map_image, max_size=int(max_size),taps=int(taps), downscale=int(downscale))
-    elif max_size is not None and taps is not None:
-        result = process(map_image, max_size=int(max_size),taps=int(taps))
-    elif max_size is not None: 
-        result = process(map_image, max_size=int(max_size))
+    if size is None:
+        size = 1000
+
+    map_image, meters_squared_per_pixel = map_downloader.download_patch((lat,lon), credentials.API_KEY, size, zoom=int(zoom))
+    if size is not None and taps is not None and grid is not None:
+        result = process(map_image, meters_squared_per_pixel, int(size),taps=int(taps), grid=int(grid))
     elif taps is not None:
-        result = process(map_image, taps=taps)
+        result = process(map_image, meters_squared_per_pixel, int(size), taps=int(taps))
     else:
-        result = process(map_image)
+        result = process(map_image, meters_squared_per_pixel, int(size))
 
     return jsonify(result)
 
