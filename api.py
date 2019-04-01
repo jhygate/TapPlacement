@@ -21,12 +21,12 @@ def process(image, meters_squared_per_pixel, size ,taps=3, grid=20):
     recoloured_image = recolour.find_silver(image)
     houses, percentage, housearea = contours.get_contour_nodes(recoloured_image, meters_squared_per_pixel)
     tap_locations = TapWork.greedy_brute(houses,taps,(height,width), downscale)
-    image = TapWork.draw_network(houses,tap_locations, size, image, meters_squared_per_pixel) 
+    result = TapWork.draw_network(houses,tap_locations, size, image, meters_squared_per_pixel) 
     population = round(housearea / 7)
     recommendation = round(population / 250)
     if recommendation == 0:
         recommendation = 1
-    return dict(image=toBase64(image), houses=len(houses), taps=taps, percentage=percentage, area=round(housearea), population=population, recommendation=recommendation)
+    return dict(image=toBase64(result), original=toBase64(image), houses=len(houses), taps=taps, percentage=percentage, area=round(housearea), population=population, recommendation=recommendation)
 
 @app.route('/giveLocation', methods=['GET'])
 def giveLocation():
