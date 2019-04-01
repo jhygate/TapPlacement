@@ -49,7 +49,7 @@ def giveLocation():
     map_image = cv2.imdecode(image_array, -1)
     if max_size is not None and taps is not None and downscale is not None:
         result = process(map_image, max_size=int(max_size),taps=int(taps), downscale=int(downscale))
-    if max_size is not None and taps is not None:
+    elif max_size is not None and taps is not None:
         result = process(map_image, max_size=int(max_size),taps=int(taps))
     elif max_size is not None: 
         result = process(map_image, max_size=int(max_size))
