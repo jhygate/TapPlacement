@@ -22,7 +22,7 @@ def process(image, max_size=200,taps=3, downscale=10):
     houses, percentage, housearea = contours.get_contour_nodes(recoloured_image)
     print(downscale)
     tap_locations = TapWork.greedy_brute(houses,taps,(height,width), downscale)
-    image = TapWork.draw_network(houses,tap_locations,resized_image, (height,width), downscale) 
+    image = TapWork.draw_network(houses,tap_locations,resized_image, (height,width)) 
     population = round(housearea / 7)
     recommendation = round(population / 250)
     if recommendation == 0:

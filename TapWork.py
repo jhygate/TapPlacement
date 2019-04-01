@@ -30,7 +30,7 @@ def get_taps_demand(taps,houses):
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
         # weight the distance^2 by the size to give a score
-        houses_tap.append((house_tap,(lowest_distance**5)*(house[0]**2)))
+        houses_tap.append((house_tap,(lowest_distance**4)*(house[0]**2)))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
@@ -51,7 +51,7 @@ def total_demand(tap_demands):
         total+=tap
     return total
 
-def draw_network(houses,taps,image, grid_size, downscale):
+def draw_network(houses,taps,image, display = True):
 
     plt.clf()
 
@@ -70,7 +70,7 @@ def draw_network(houses,taps,image, grid_size, downscale):
     g = nx.Graph()
     for i in range(len(taps)):
         g.add_node(i)
-        pos[i]=(taps[i][0]*downscale),(taps[i][1]*downscale )
+        pos[i]=(taps[i][0],taps[i][1])
         names[i]= str((i + 1))
 
     nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=120, font_size=10, font_color='w')
@@ -98,17 +98,11 @@ def total(demands):
         totalval += demand
     return totalval
 
-def greedy_brute(houseList,amount_of_taps,grid_size, downscale):
-
-    houses = []
-
-    for house in houseList:
-        houses.append((house[0], (int(house[1][0] / downscale), int(house[1][1] / downscale))))
-
-    grid_size = int(grid_size[0] / downscale), int(grid_size[1] / downscale)
-
+def greedy_brute(houses,amount_of_taps,grid_size, downscale):
     total_tick = amount_of_taps*grid_size[0]*grid_size[1]
+    happy_taps = []
     stored_taps = []
+    possible_coords = []
 
     with tqdm(total=total_tick) as t:
         for tap_placed in range(amount_of_taps):
@@ -116,19 +110,20 @@ def greedy_brute(houseList,amount_of_taps,grid_size, downscale):
             best_tap = (0,0)
             for x in range(grid_size[0] + 1):
                 for y in range(grid_size[1] + 1):
-                    coord = (x, y);
-                    t.update(1)
-                    taps = list(copy.copy(stored_taps))
-                    taps.append(coord)
+                    if (x % downscale == 0 and y % downscale == 0):
+                        coord = (x, y);
+                        t.update(1)
+                        taps = list(copy.copy(stored_taps))
+                        taps.append(coord)
 
-                    tap_demand = get_taps_demand(taps, houses)
-                    total_differnce = total_demand(tap_demand)
+                        tap_demand = get_taps_demand(taps, houses)
+                        total_differnce = total_demand(tap_demand)
 
-                    if total_differnce == min_total_differnces:
-                        best_tap = coord
+                        if total_differnce == min_total_differnces:
+                            best_tap = coord
 
-                    if total_differnce < min_total_differnces:
-                        best_tap = coord
-                        min_total_differnces = total_differnce
+                        if total_differnce < min_total_differnces:
+                            best_tap = coord
+                            min_total_differnces = total_differnce
             stored_taps.append(best_tap)
     return stored_taps
