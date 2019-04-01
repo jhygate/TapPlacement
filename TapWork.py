@@ -30,7 +30,7 @@ def get_taps_demand(taps,houses):
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
         # weight the distance^2 by the size to give a score
-        houses_tap.append((house_tap,(lowest_distance**4)*(house[0]**2)))
+        houses_tap.append((house_tap,(lowest_distance**5)*(house[0]**2)))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
@@ -51,7 +51,7 @@ def total_demand(tap_demands):
         total+=tap
     return total
 
-def draw_network(houses,taps,image, display = True):
+def draw_network(houses,taps,image, grid_size, downscale):
 
     plt.clf()
 
@@ -70,7 +70,7 @@ def draw_network(houses,taps,image, display = True):
     g = nx.Graph()
     for i in range(len(taps)):
         g.add_node(i)
-        pos[i]=(taps[i][0],taps[i][1])
+        pos[i]=(taps[i][0]*downscale),(taps[i][1]*downscale )
         names[i]= str((i + 1))
 
     nx.draw_networkx(g, pos=pos, names=names, node_color='b',node_size=120, font_size=10, font_color='w')
@@ -98,11 +98,17 @@ def total(demands):
         totalval += demand
     return totalval
 
-def greedy_brute(houses,amount_of_taps,grid_size):
+def greedy_brute(houseList,amount_of_taps,grid_size, downscale):
+
+    houses = []
+
+    for house in houseList:
+        houses.append((house[0], (int(house[1][0] / downscale), int(house[1][1] / downscale))))
+
+    grid_size = int(grid_size[0] / downscale), int(grid_size[1] / downscale)
+
     total_tick = amount_of_taps*grid_size[0]*grid_size[1]
-    happy_taps = []
     stored_taps = []
-    possible_coords = []
 
     with tqdm(total=total_tick) as t:
         for tap_placed in range(amount_of_taps):

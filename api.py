@@ -15,13 +15,14 @@ def toBase64(image):
     png_as_text = base64.b64encode(buffer).decode('utf-8')
     return png_as_text
 
-def process(image, max_size=200,taps=3):
+def process(image, max_size=200,taps=3, downscale=10):
     resized_image = resize.resize(image,max_size)
     height, width, _ = resized_image.shape
     recoloured_image = recolour.find_silver(resized_image)
     houses, percentage, housearea = contours.get_contour_nodes(recoloured_image)
-    tap_locations = TapWork.greedy_brute(houses,taps,(height,width))
-    image = TapWork.draw_network(houses,tap_locations,resized_image,display=False) 
+    print(downscale)
+    tap_locations = TapWork.greedy_brute(houses,taps,(height,width), downscale)
+    image = TapWork.draw_network(houses,tap_locations,resized_image, (height,width), downscale) 
     population = round(housearea / 7)
     recommendation = round(population / 250)
     if recommendation == 0:
@@ -32,8 +33,9 @@ def process(image, max_size=200,taps=3):
 def giveLocation():
     lon = request.args.get('long')
     lat = request.args.get('lat')
-    max_size = int(request.args.get('size'))
-    taps = int(request.args.get('taps'))
+    max_size = request.args.get('size')
+    taps = request.args.get('taps')
+    downscale = request.args.get('downscale')
     print(lon,lat)
     if lon is None or lat is None:
         response = Response()
@@ -42,10 +44,12 @@ def giveLocation():
     image = map_downloader.download_patch((lat,lon), credentials.API_KEY)
     image_array = numpy.asarray(bytearray(image.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
+    if max_size is not None and taps is not None and downscale is not None:
+        result = process(map_image, max_size=int(max_size),taps=int(taps), downscale=int(downscale))
     if max_size is not None and taps is not None:
-        result = process(map_image, max_size=max_size,taps=taps)
+        result = process(map_image, max_size=int(max_size),taps=int(taps))
     elif max_size is not None: 
-        result = process(map_image, max_size=max_size)
+        result = process(map_image, max_size=int(max_size))
     elif taps is not None:
         result = process(map_image, taps=taps)
     else:

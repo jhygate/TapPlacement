@@ -32,8 +32,8 @@ def get_contour_nodes(image):
             # consider buildings greater than 8m^2
             if cv2.contourArea(c) * areaperpixel > 8:
                 M = cv2.moments(c)
-                cX = int(M["m10"] / M["m00"])
-                cY = int(M["m01"] / M["m00"])
+                cX = round(M["m10"] / M["m00"])
+                cY = round(M["m01"] / M["m00"])
                 totalarea += cv2.contourArea(c) * areaperpixel
                 nodes.append([cv2.contourArea(c) * areaperpixel, [cX, cY]])
         except:
