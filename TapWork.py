@@ -99,7 +99,7 @@ def total(demands):
     return totalval
 
 def greedy_brute(houses,amount_of_taps,grid_size, downscale):
-    total_tick = amount_of_taps*grid_size[0]*grid_size[1]
+    total_tick = (amount_of_taps*grid_size[0]*grid_size[1]) / (downscale**2)
     happy_taps = []
     stored_taps = []
     possible_coords = []

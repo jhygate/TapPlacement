@@ -36,12 +36,15 @@ def giveLocation():
     max_size = request.args.get('size')
     taps = request.args.get('taps')
     downscale = request.args.get('downscale')
+    zoom = request.args.get('zoom')
     print(lon,lat)
     if lon is None or lat is None:
         response = Response()
         response.status_code = 400
         return response
-    image = map_downloader.download_patch((lat,lon), credentials.API_KEY)
+    if zoom is None:
+        zoom = 19
+    image = map_downloader.download_patch((lat,lon), credentials.API_KEY, zoom=int(zoom))
     image_array = numpy.asarray(bytearray(image.content), dtype=numpy.uint8)
     map_image = cv2.imdecode(image_array, -1)
     if max_size is not None and taps is not None and downscale is not None:
