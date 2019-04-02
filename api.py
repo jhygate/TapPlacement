@@ -18,9 +18,13 @@ def toBase64(image):
 def process(image, meters_squared_per_pixel, size ,taps=3, grid=20):
     downscale = int(size / grid)
     height, width, _ = image.shape
+    # Detect roof colours
     recoloured_image = recolour.find_silver(image)
+    # Detect houses & area
     houses, percentage, housearea = contours.get_contour_nodes(recoloured_image, meters_squared_per_pixel)
+    # Generate tap locations
     tap_locations = TapWork.greedy_brute(houses,taps,(height,width), downscale)
+    # Draw result image
     result = TapWork.draw_network(houses,tap_locations, size, image, meters_squared_per_pixel) 
     population = round(housearea / 7)
     recommendation = round(population / 250)

@@ -21,7 +21,7 @@ def get_contour_nodes(image, meters_squared_per_pixel):
 
     nodes = []
 
-    totalarea = 0;
+    totalarea = 0
 
     # loop over the contours
     for c in cnts:
