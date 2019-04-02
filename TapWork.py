@@ -29,8 +29,9 @@ def get_taps_demand(taps,houses):
             if tap_dist < lowest_distance:
                 lowest_distance = tap_dist
                 house_tap = taps.index(tap)
+        lowest_distance = lowest_distance / 1000
         # weight the distance^2 by the size to give a score
-        houses_tap.append((house_tap,((lowest_distance**4)*(house[0]**2))/ 10000))
+        houses_tap.append((house_tap,((lowest_distance**4)*(house[0]**2))/ 1000))
 
     for tap in houses_tap:
         tap_demand[tap[0]]+=tap[1]
